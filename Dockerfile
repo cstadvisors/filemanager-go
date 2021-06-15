@@ -11,3 +11,4 @@ COPY --from=builder /app/wfs-ls /app/
 COPY ./icons /app/icons
 
 CMD ["./wfs-ls"]
+STOPSIGNAL SIGINT
