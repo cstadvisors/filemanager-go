@@ -34,6 +34,9 @@ type FSFeatures struct {
 }
 
 var drive wfs.Drive
+
+var preview_drive wfs.Drive
+
 var features = FSFeatures{
 	Preview: map[string]bool{},
 	Meta:    map[string]bool{},
@@ -45,6 +48,8 @@ type AppConfig struct {
 	Preview     string
 	UploadLimit int64
 	Readonly    bool
+	// @MG: Added Previewcache setting to store previews.
+	Previewcache string
 }
 
 var Config AppConfig
@@ -85,6 +90,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)

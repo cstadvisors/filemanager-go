@@ -69,7 +69,9 @@ func getFilePreview(w http.ResponseWriter, r *http.Request) {
 
 	source := filepath.Join(Config.Root, id)
 	name := filepath.Base(source)
-	folder := filepath.Join(Config.Root, id[:len(id)-len(name)], ".preview")
+    // 	folder := filepath.Join(Config.Root, id[:len(id)-len(name)], ".preview")
+    // @MG: Use Previewcache directory to store preview
+	folder := filepath.Join(Config.Previewcache, id[:len(id)-len(name)], ".preview")
 	preview := filepath.Join(folder, name+"___"+widthStr+"x"+heightStr)
 
 	// check previously generated preview
@@ -91,7 +93,9 @@ func getFilePreview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ensure that preview folder does exist
-	os.Mkdir(folder, 0777)
+    // 	os.Mkdir(folder, 0777)
+    // @MG: Make all directories in path if necessary
+	os.MkdirAll(folder, 0777)
 
 	if Config.Preview != "" {
 		file, _ := drive.Read(id)
