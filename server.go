@@ -16,8 +16,8 @@ import (
 	"github.com/rwcarlsen/goexif/tiff"
 	"github.com/unrolled/render"
 
-	"github.com/xbsoftware/wfs"
-	local "github.com/xbsoftware/wfs-local"
+	"github.com/kewcapital/wfs"
+	local "github.com/kewcapital/wfs-local"
 )
 
 var format = render.New()
@@ -173,7 +173,7 @@ func main() {
 
 		data, err := drive.List(id, &wfs.ListConfig{
 			Nested:     true,
-			SubFolders: true,
+			SubFolders: false,
 			SkipFiles:  true,
 			Exclude:    func(name string) bool { return strings.HasPrefix(name, ".") },
 		})
