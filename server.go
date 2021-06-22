@@ -54,6 +54,11 @@ type AppConfig struct {
 
 var Config AppConfig
 
+func excludeFile(name string) bool {
+    // @MG: Exclude thumbs.db and link files in addition to '.' hidden files
+    return strings.HasPrefix(name, ".") || strings.ToLower(name) == "thumbs.db" || strings.HasSuffix(strings.ToLower(name), ".lnk")
+}
+
 func main() {
 	flag.StringVar(&Config.Preview, "preview", "", "url of preview generation service")
 	flag.BoolVar(&Config.Readonly, "readonly", false, "readonly mode")
@@ -144,14 +149,14 @@ func main() {
 		if search == "" {
 			config = &wfs.ListConfig{
 				Nested:  true,
-				Exclude: func(name string) bool { return strings.HasPrefix(name, ".") },
+				Exclude: excludeFile,
 			}
 		} else {
 			search = strings.ToLower(search)
 			config = &wfs.ListConfig{
 				SubFolders: true,
 				Include:    func(name string) bool { return strings.Contains(strings.ToLower(name), search) },
-				Exclude:    func(name string) bool { return strings.HasPrefix(name, ".") },
+				Exclude:    excludeFile,
 			}
 		}
 
