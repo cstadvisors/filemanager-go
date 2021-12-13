@@ -69,9 +69,15 @@ func getFilePreview(w http.ResponseWriter, r *http.Request) {
 
 	source := filepath.Join(Config.Root, id)
 	name := filepath.Base(source)
-    // 	folder := filepath.Join(Config.Root, id[:len(id)-len(name)], ".preview")
+
+	// @MG: Use a store_local flag to decide whether to use the local directory or
+	// a preview cache directory
     // @MG: Use Previewcache directory to store preview
-	folder := filepath.Join(Config.Previewcache, id[:len(id)-len(name)], ".preview")
+    folder := filepath.Join(Config.Previewcache, id[:len(id)-len(name)], ".preview")
+	store_local := r.URL.Query().Get("store_local")
+	if store_local == "1" {
+    	folder = filepath.Join(Config.Root, id[:len(id)-len(name)], ".preview")
+	}
 	preview := filepath.Join(folder, name+"___"+widthStr+"x"+heightStr)
 
 	// check previously generated preview
@@ -86,10 +92,11 @@ func getFilePreview(w http.ResponseWriter, r *http.Request) {
 			// there is a preview placeholder, which means preview can't be generated for this file
 			serveIconPreview(w, r, info)
 			return
-		} else {
+		} else if info.Date < ps.ModTime().Unix() {
+		    // @MG: if the file has not been modified since the preview was generated, return the preview
 			http.ServeFile(w, r, preview+ext)
+		    return
 		}
-		return
 	}
 
 	// ensure that preview folder does exist
