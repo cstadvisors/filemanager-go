@@ -154,7 +154,7 @@ func main() {
 		} else {
 			search = strings.ToLower(search)
 			config = &wfs.ListConfig{
-				SubFolders: true,
+				SubFolders: false,
 				Include:    func(name string) bool { return strings.Contains(strings.ToLower(name), search) },
 				Exclude:    excludeFile,
 			}
